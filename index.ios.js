@@ -1,6 +1,6 @@
 /**
- * Sample React Native App
- * https://github.com/facebook/react-native
+ * Custom alarm clock app for iOS
+ * @author Osama Sakhi <msakhi21@gmail.com>
  * @flow
  */
 
@@ -9,51 +9,121 @@ import {
   AppRegistry,
   StyleSheet,
   Text,
-  View
+  View,
+  Image,
+  TouchableHighlight
 } from 'react-native';
 
-export default class alarming extends Component {
+var moment = require('moment');
+
+
+export class singleAlarm extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      time: moment().format("hh:mm:ss A")
+    };
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Welcome to React Native!
-        </Text>
-        <Text style={styles.instructions}>
-          To get started, edit index.ios.js
-        </Text>
-        <Text style={styles.instructions}>
-          Press Cmd+R to reload,{'\n'}
-          Cmd+D or shake for dev menu
+      <View style={{flex: 1, backgroundColor: "skyblue"}}>
+        <Text style={styles.watch}>
+          {this.props.name}
         </Text>
       </View>
+    );
+  }
+}
 
-      <View style={{flex: 1}}>
-        <View style={{flex: 1, backgroundColor: 'powderblue'}} />
-        <View style={{flex: 2, backgroundColor: 'skyblue'}} />
-        <View style={{flex: 3, backgroundColor: 'steelblue'}} />
+export default class alarming extends Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      time: moment().format("hh:mm:ss A")
+    };
+
+    this.addNewAlarm = this.addNewAlarm.bind(this);
+  }
+
+  componentDidMount() {
+    setInterval(() => {
+      this.setState ({
+        time: moment().format("hh:mm:ss A")
+      });
+    }, 1000);
+  }
+
+  // A dummy function for now. Will pull up a modal window later
+  addNewAlarm() {
+    this.setState({
+      time: "ADD ALARM"
+    });
+  }
+
+  render() {
+    return (
+      <View style={styles.watchHolder}>
+        
+        <View style={{flex: 2, backgroundColor: 'skyblue'}}>
+          <Text style={styles.watch}>
+            {this.state.time}
+          </Text>
+
+          <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'flex-end' }}>
+
+            <TouchableHighlight onPress={this.addNewAlarm} style={styles.addalarmHolder} >
+              <Image source={images.addalarm} style={styles.addalarm} />
+            </TouchableHighlight>
+          </View>
+
+        </View>
+        <View style={{flex: 8, backgroundColor: 'steelblue'}} />
       </View>
     );
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
+  watch: {
+    fontFamily: "Helvetica",
+    fontSize: 40,
+    textAlign: 'center',
+    margin: 5,
+    paddingTop: 30,
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF',
+    left:     0,
+    top:      0,
   },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
+
+  watchHolder: {
+    flex: 1,
+    backgroundColor: "steelblue"
   },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
+
+  addalarmHolder: {
+    marginRight: 10,
+    marginBottom: 10
   },
+
+  addalarm: {
+    width: 40,
+    height: 40,
+    paddingBottom: 10,
+    paddingRight: 10,
+    // margin: 10
+    // marginRight: 10,
+    // marginBottom: 10
+  },
+  
 });
+
+const images = {
+  addalarm: require("./assets/img/alarm_add.png")
+};
 
 AppRegistry.registerComponent('alarming', () => alarming);
